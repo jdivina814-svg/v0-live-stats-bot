@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "node bot/index.js",
     "lint": "eslint .",
     "bot": "node bot/index.js",
     "bot:dev": "node --watch bot/index.js"
