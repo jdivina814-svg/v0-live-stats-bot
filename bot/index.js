@@ -19,49 +19,50 @@ const API_BASE    = "https://api.injuries.to";
 
 // ── Auth helpers ────────────────────────────────────────────────────────────────
 
-async function getAuth() {
+async function getSession() {
   if (!SESSION_COOKIE) throw new Error("LOGGED_TG_SESSION_COOKIE is not set.");
 
   const res = await fetch(SESSION_URL, {
     headers: {
-      Cookie:       SESSION_COOKIE,
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36",
-      Referer:      "https://logged.tg/dashboard",
-    },
-  });
-
-  if (!res.ok) throw new Error(`Session fetch failed (${res.status}) — cookie may be expired.`);
-
-  const data    = await res.json();
-  const authObj = data?.Auth ?? data?.userSettings?.Auth ?? null;
-
-  if (!authObj) throw new Error("Auth tokens not found — session cookie may be expired.");
-
-  const id    = Array.isArray(authObj) ? authObj[0] : (authObj.Id    ?? authObj.id);
-  const token = Array.isArray(authObj) ? authObj[1] : (authObj.Token ?? authObj.token);
-
-  if (!id || !token) throw new Error("Auth.Id or Auth.Token missing in session.");
-
-  return {
-    id:          String(id),
-    token:       String(token),
-    userSettings: data?.userSettings ?? data?.user ?? {},
-  };
-}
-
-async function apiGet(path, session) {
-  const res = await fetch(`${API_BASE}${path}`, {
-    headers: {
-      "x-id":         session.id,
-      "x-token":      session.token,
-      "content-type": "application/json; charset=utf-8",
-      "User-Agent":   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36",
-      Origin:         "https://logged.tg",
-      Referer:        "https://logged.tg/dashboard",
+      Cookie:        SESSION_COOKIE,
+      "User-Agent":  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36",
+      Referer:       "https://logged.tg/dashboard",
+      Accept:        "application/json",
     },
   });
 
   const text = await res.text();
+  console.log("[v0] Session status:", res.status);
+  console.log("[v0] Session response (first 500 chars):", text.slice(0, 500));
+
+  if (!res.ok) throw new Error(`Session fetch failed (${res.status}) — cookie may be expired.`);
+
+  let data;
+  try { data = JSON.parse(text); } catch { throw new Error(`Session returned non-JSON: ${text.slice(0, 200)}`); }
+
+  console.log("[v0] Session top-level keys:", Object.keys(data));
+  return data;
+}
+
+async function apiGet(path, id, token) {
+  const url = `${API_BASE}${path}`;
+  console.log("[v0] API GET:", url, "id:", id, "token:", token ? token.slice(0, 8) + "..." : "NONE");
+
+  const res = await fetch(url, {
+    headers: {
+      "x-id":         id,
+      "x-token":      token,
+      "content-type": "application/json; charset=utf-8",
+      "User-Agent":   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36",
+      Origin:         "https://logged.tg",
+      Referer:        "https://logged.tg/dashboard",
+      Accept:         "application/json",
+    },
+  });
+
+  const text = await res.text();
+  console.log("[v0] API", path, "status:", res.status, "response (first 500):", text.slice(0, 500));
+
   let json;
   try { json = JSON.parse(text); } catch { json = { raw: text }; }
 
@@ -72,18 +73,55 @@ async function apiGet(path, session) {
 // ── Stats fetcher ───────────────────────────────────────────────────────────────
 
 async function fetchStats() {
-  const session  = await getAuth();
-  const data     = await apiGet("/api/auth", session);
+  const sessionData = await getSession();
 
-  const mainData       = data?.omniData?.Main ?? data?.Main ?? data;
-  const mainDataInner  = mainData?.Data ?? mainData;
-  const profile        = data?.omniData?.Profile?.Header ?? {};
-  const totals         = mainDataInner?.Totals       ?? {};
-  const collectibles   = mainDataInner?.Collectibles ?? {};
-  const billing        = mainDataInner?.Billing      ?? {};
-  const groups         = mainDataInner?.Groups       ?? {};
-  const cookies        = mainDataInner?.Cookies      ?? {};
-  const userSettings   = data?.userSettings ?? session.userSettings ?? {};
+  // Extract auth tokens from session
+  const authArr = sessionData?.Auth
+    ?? sessionData?.userSettings?.Auth
+    ?? sessionData?.user?.Auth
+    ?? null;
+
+  console.log("[v0] authArr:", JSON.stringify(authArr)?.slice(0, 100));
+
+  if (!authArr) throw new Error("Auth tokens not found in session — cookie may be expired.");
+
+  const id    = Array.isArray(authArr) ? String(authArr[0]) : String(authArr.Id ?? authArr.id ?? "");
+  const token = Array.isArray(authArr) ? String(authArr[1]) : String(authArr.Token ?? authArr.token ?? "");
+
+  if (!id || !token) throw new Error("Auth.Id or Auth.Token missing in session.");
+
+  console.log("[v0] Got auth id:", id, "token:", token.slice(0, 8) + "...");
+
+  // Try common dashboard/stats endpoints
+  let data;
+  for (const path of ["/api/auth", "/api/user", "/api/dashboard", "/v2/user", "/api/omni"]) {
+    try {
+      data = await apiGet(path, id, token);
+      if (data && !data.error && !data.message && Object.keys(data).length > 2) {
+        console.log("[v0] Got data from path:", path, "keys:", Object.keys(data));
+        break;
+      }
+    } catch (e) {
+      console.log("[v0] Path", path, "failed:", e.message);
+      data = null;
+    }
+  }
+
+  if (!data) throw new Error("Could not fetch stats from any endpoint. Check logs for details.");
+
+  const userSettings = sessionData?.userSettings ?? sessionData?.user ?? {};
+
+  // Walk common response shapes
+  const mainData     = data?.omniData?.Main ?? data?.Main ?? data?.data ?? data;
+  const inner        = mainData?.Data ?? mainData;
+  const profile      = data?.omniData?.Profile?.Header ?? data?.Profile?.Header ?? {};
+  const totals       = inner?.Totals       ?? data?.Totals       ?? {};
+  const collectibles = inner?.Collectibles ?? data?.Collectibles ?? {};
+  const billing      = inner?.Billing      ?? data?.Billing      ?? {};
+  const groups       = inner?.Groups       ?? data?.Groups       ?? {};
+  const cookies      = inner?.Cookies      ?? data?.Cookies      ?? {};
+
+  console.log("[v0] totals:", JSON.stringify(totals));
 
   return {
     userName:     String(userSettings?.userName    ?? profile?.Username    ?? "Unknown"),
