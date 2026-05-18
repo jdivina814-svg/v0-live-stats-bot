@@ -22,19 +22,25 @@ async function getAuthTokens() {
   if (!AUTH_TOKEN) throw new Error("AUTH_TOKEN is not set.");
 
   const res = await fetch(SESSION_URL, {
+    method:  "POST",
     headers: {
-      Cookie:       `AUTH_TOKEN=${AUTH_TOKEN}`,
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36",
-      Referer:      "https://logged.tg/dashboard",
-      Accept:       "application/json",
+      Cookie:         `AUTH_TOKEN=${AUTH_TOKEN}`,
+      "Content-Type": "application/json",
+      "User-Agent":   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36",
+      Referer:        "https://logged.tg/dashboard",
+      Accept:         "application/json",
     },
+    body: JSON.stringify({}),
   });
 
   if (!res.ok) {
-    throw new Error(`Session fetch failed (${res.status}) — cookie may be expired.`);
+    const body = await res.text();
+    throw new Error(`Session fetch failed (${res.status}): ${body.slice(0, 200)}`);
   }
 
-  const data = await res.json();
+  const text = await res.text();
+  console.log("[v0] session raw response:", text.slice(0, 500));
+  const data = JSON.parse(text);
 
   // The session endpoint returns Auth as [id, token] or { Id, Token }
   const authArr = data?.Auth ?? data?.userSettings?.Auth ?? null;
