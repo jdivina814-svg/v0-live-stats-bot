@@ -183,7 +183,7 @@ client.on("interactionCreate", async (interaction) => {
 
       // Reply as a plain message — no embed
       await interaction.editReply({
-        content: `**ʟɪɴᴋ ʜɪᴅᴇ ᴄᴏᴘʏ ᴀɴᴅ ꜱʜᴀʀᴇ**\n\`\`\`${fmt}\`\`\``,
+        content: `**ʟɪɴᴋ ʜɪᴅᴇ ᴄᴏᴘʏ ᴀɴᴅ ꜱʜᴀʀᴇ**\n\`\`\`${fmt}\`\`\`\n-# Requested by ${interaction.user.username}`,
       });
     } catch (err) {
       console.error("[bot] hyperlink error:", err.message);

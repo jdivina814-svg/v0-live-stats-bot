@@ -121,6 +121,9 @@ export default function DiscordEmbedMockup() {
         >
           {EXAMPLE_FMT}
         </pre>
+        <p className="text-xs" style={{ color: DC.muted }}>
+          Requested by exampleuser
+        </p>
       </div>
 
     </div>
