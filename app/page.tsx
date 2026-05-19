@@ -13,10 +13,10 @@ export default function Home() {
       <header className="border-b border-border bg-card px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground text-xs font-bold font-mono">LG</span>
+            <span className="text-primary-foreground text-xs font-bold font-mono">HL</span>
           </div>
           <div>
-            <p className="text-sm font-semibold text-foreground leading-none">logged.tg Stats Bot</p>
+            <p className="text-sm font-semibold text-foreground leading-none">Hyperlink Bot</p>
             <p className="text-xs text-muted-foreground mt-0.5">Discord bot</p>
           </div>
         </div>
@@ -40,9 +40,10 @@ export default function Home() {
           <h1 className="text-xl font-bold text-foreground tracking-tight text-balance">
             Live Discord Embed Preview
           </h1>
+
           <p className="text-sm text-muted-foreground leading-relaxed">
             This is what users see when they type{" "}
-            <code className="bg-secondary text-foreground px-1.5 py-0.5 rounded text-xs font-mono">!stats</code>{" "}
+            <code className="bg-secondary text-foreground px-1.5 py-0.5 rounded text-xs font-mono">!hyperlink</code>{" "}
             in your server.
           </p>
 
@@ -69,18 +70,18 @@ export default function Home() {
                     <span className="text-sm font-semibold text-foreground">user</span>
                     <span className="text-xs text-muted-foreground">Today at 4:20 PM</span>
                   </div>
-                  <p className="text-sm text-foreground mt-0.5 font-mono">!stats</p>
+                  <p className="text-sm text-foreground mt-0.5 font-mono">!hyperlink</p>
                 </div>
               </div>
 
               {/* Bot reply */}
               <div className="flex gap-3">
                 <div className="w-9 h-9 rounded-full bg-primary shrink-0 flex items-center justify-center text-xs font-bold text-primary-foreground">
-                  LG
+                  HL
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-sm font-semibold text-primary">logged.tg Bot</span>
+                    <span className="text-sm font-semibold text-primary">Hyperlink Bot</span>
                     <span className="text-xs bg-primary/20 text-primary px-1 rounded text-[10px] font-semibold uppercase tracking-wide">BOT</span>
                     <span className="text-xs text-muted-foreground">Today at 4:20 PM</span>
                   </div>

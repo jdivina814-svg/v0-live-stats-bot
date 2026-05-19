@@ -1,7 +1,7 @@
 {
-  "name": "loggedtg-stats-bot",
+  "name": "hyperlink-bot",
   "version": "1.0.0",
-  "description": "Discord bot that fetches live stats from logged.tg",
+  "description": "Discord bot that creates hidden hyperlinks via linkurlshort.page.gd",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
@@ -12,6 +12,6 @@
   "dependencies": {
     "discord.js": "^14.16.3",
     "dotenv": "^16.4.5",
-    "node-fetch": "^2.7.0"
+    "node-fetch": "^3.3.2"
   }
 }

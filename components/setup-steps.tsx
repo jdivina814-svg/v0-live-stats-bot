@@ -31,8 +31,8 @@ const steps = [
   {
     num: 5,
     title: "Add environment variables on Railway",
-    body: "In your Railway project, click Variables and add these two required values:",
-    vars: ["DISCORD_BOT_TOKEN", "LOGGED_TG_SESSION_COOKIE"],
+    body: "In your Railway project, click Variables and add the required value:",
+    vars: ["DISCORD_BOT_TOKEN"],
   },
   {
     num: 6,
@@ -41,10 +41,10 @@ const steps = [
   },
   {
     num: 7,
-    title: "Type !stats in your server",
-    body: 'Go to any channel in your Discord server and type:',
-    code: "!stats",
-    note: "Optional: set STATS_CHANNEL_ID in Railway vars to restrict the command to one channel.",
+    title: "Type !hyperlink in your server",
+    body: "Go to any channel in your Discord server and type:",
+    code: "!hyperlink",
+    note: "A button will appear. Click Submit Link, paste any URL, and the bot will return a masked hyperlink powered by linkurlshort.page.gd.",
   },
 ];
 

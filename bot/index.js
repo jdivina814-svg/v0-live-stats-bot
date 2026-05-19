@@ -4,113 +4,22 @@ const {
   Client,
   GatewayIntentBits,
   ActivityType,
-  ChannelType,
+  EmbedBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  ModalBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+  InteractionType,
 } = require("discord.js");
-const OpenAI = require("openai");
 
 // ── Config ──────────────────────────────────────────────────────────────────────
-const DISCORD_TOKEN = process.env.DISCORD_BOT_TOKEN;
-const OPENAI_KEY    = process.env.OPENAI_API_KEY;
-const PREFIX        = "!";
-
-const openai = new OpenAI({ apiKey: OPENAI_KEY });
-
-// ── Helpers ─────────────────────────────────────────────────────────────────────
-
-/**
- * Build a plain-text summary of every channel and category in the guild,
- * including channel topics and any button/link-style URLs found in pinned messages.
- */
-async function buildServerContext(guild) {
-  const lines = [`Server: ${guild.name}`];
-
-  // Collect all channels sorted by position
-  const channels = [...guild.channels.cache.values()].sort(
-    (a, b) => a.position - b.position
-  );
-
-  for (const ch of channels) {
-    if (ch.type === ChannelType.GuildCategory) {
-      lines.push(`\nCategory: ${ch.name}`);
-      continue;
-    }
-
-    if (
-      ch.type === ChannelType.GuildText ||
-      ch.type === ChannelType.GuildAnnouncement ||
-      ch.type === ChannelType.GuildForum
-    ) {
-      const mention = `<#${ch.id}>`;
-      const topic   = ch.topic ? ` — "${ch.topic}"` : "";
-      lines.push(`  #${ch.name} (mention: ${mention})${topic}`);
-
-      // Collect URLs from pinned messages (buttons / embeds often have links)
-      try {
-        const pins = await ch.messages.fetchPinned().catch(() => null);
-        if (pins) {
-          const urls = new Set();
-          for (const msg of pins.values()) {
-            // Grab URLs from message content
-            const found = msg.content.match(/https?:\/\/[^\s>]+/g) || [];
-            found.forEach((u) => urls.add(u));
-            // Grab URLs from embeds
-            for (const embed of msg.embeds) {
-              if (embed.url)          urls.add(embed.url);
-              if (embed.description) {
-                const eu = embed.description.match(/https?:\/\/[^\s>]+/g) || [];
-                eu.forEach((u) => urls.add(u));
-              }
-              for (const field of embed.fields ?? []) {
-                const fu = field.value.match(/https?:\/\/[^\s>]+/g) || [];
-                fu.forEach((u) => urls.add(u));
-              }
-            }
-            // Grab URLs from action row buttons
-            for (const row of msg.components ?? []) {
-              for (const component of row.components ?? []) {
-                if (component.url) urls.add(component.url);
-              }
-            }
-          }
-          if (urls.size > 0) {
-            lines.push(`    Links in pins: ${[...urls].join(", ")}`);
-          }
-        }
-      } catch {
-        // ignore channels we can't read
-      }
-    }
-  }
-
-  return lines.join("\n");
-}
-
-/**
- * Ask OpenAI with server context injected as system prompt.
- */
-async function askAI(question, serverContext) {
-  const systemPrompt = `You are a helpful assistant for a Discord server. 
-When a user asks about a channel, always mention it using its Discord mention format like <#CHANNEL_ID> so it becomes a clickable link.
-When a user asks about a website or link that exists in the server, provide the URL directly.
-Keep answers concise and friendly. Do NOT use embeds or markdown headers. Plain text only.
-Here is everything you know about this server's channels and links:
-
-${serverContext}`;
-
-  const completion = await openai.chat.completions.create({
-    model:    "gpt-4o-mini",
-    messages: [
-      { role: "system",  content: systemPrompt },
-      { role: "user",    content: question     },
-    ],
-    max_tokens: 500,
-  });
-
-  return completion.choices[0]?.message?.content?.trim() ?? "Sorry, I couldn't generate a response.";
-}
+const DISCORD_TOKEN  = process.env.DISCORD_BOT_TOKEN;
+const SHORT_API_BASE = "https://linkurlshort.page.gd";
+const PREFIX         = "!";
 
 // ── Discord client ──────────────────────────────────────────────────────────────
-
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -121,45 +30,127 @@ const client = new Client({
 
 client.once("ready", () => {
   console.log(`[bot] Online as ${client.user.tag}`);
-  client.user.setActivity("!ask <question>", { type: ActivityType.Listening });
+  client.user.setActivity("!hyperlink", { type: ActivityType.Listening });
 });
 
+// ── !hyperlink command ──────────────────────────────────────────────────────────
 client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
   if (!message.guild)     return;
 
-  const content = message.content.trim();
-  if (!content.toLowerCase().startsWith(`${PREFIX}ask`)) return;
+  const content = message.content.trim().toLowerCase();
+  if (content !== `${PREFIX}hyperlink`) return;
 
-  // Extract question after !ask
-  const question = content.slice(PREFIX.length + 3).trim();
+  // Build the embed that prompts the user to submit a link
+  const embed = new EmbedBuilder()
+    .setColor(0x5865f2)
+    .setTitle("Hide a Link with Hyperlink")
+    .setDescription(
+      "Want to disguise a long URL as a clean hyperlink?\n\n" +
+      "Click **Submit Link** below, paste your URL, and the bot will return a formatted hyperlink you can share anywhere."
+    )
+    .addFields(
+      { name: "How it works", value: "Your URL is posted to **linkurlshort.page.gd** and returned as a masked hyperlink.", inline: false },
+      { name: "Privacy", value: "The link is visible only to you in this message reply.", inline: false }
+    )
+    .setFooter({ text: "Powered by linkurlshort.page.gd" })
+    .setTimestamp();
 
-  if (!question) {
-    await message.reply("Please provide a question. Usage: `!ask where is the hyperlink channel?`");
+  const row = new ActionRowBuilder().addComponents(
+    new ButtonBuilder()
+      .setCustomId("hyperlink_submit")
+      .setLabel("Submit Link")
+      .setStyle(ButtonStyle.Primary)
+      .setEmoji("🔗")
+  );
+
+  await message.reply({ embeds: [embed], components: [row] });
+});
+
+// ── Button / Modal interactions ─────────────────────────────────────────────────
+client.on("interactionCreate", async (interaction) => {
+  // ── Button pressed: open modal ──
+  if (interaction.isButton() && interaction.customId === "hyperlink_submit") {
+    const modal = new ModalBuilder()
+      .setCustomId("hyperlink_modal")
+      .setTitle("Submit a Link to Shorten");
+
+    const urlInput = new TextInputBuilder()
+      .setCustomId("url_input")
+      .setLabel("Paste your URL here")
+      .setStyle(TextInputStyle.Short)
+      .setPlaceholder("https://example.com/very/long/url")
+      .setRequired(true);
+
+    modal.addComponents(
+      new ActionRowBuilder().addComponents(urlInput)
+    );
+
+    await interaction.showModal(modal);
     return;
   }
 
-  await message.channel.sendTyping();
+  // ── Modal submitted ──
+  if (
+    interaction.type === InteractionType.ModalSubmit &&
+    interaction.customId === "hyperlink_modal"
+  ) {
+    const rawUrl = interaction.fields.getTextInputValue("url_input").trim();
 
-  try {
-    const serverContext = await buildServerContext(message.guild);
-    const answer        = await askAI(question, serverContext);
-    await message.reply(answer);
-  } catch (err) {
-    console.error("[bot] !ask error:", err.message);
-    await message.reply("Something went wrong while answering your question. Please try again.");
+    await interaction.deferReply({ ephemeral: false });
+
+    try {
+      // POST to linkurlshort.page.gd
+      const fetch = (...args) => import("node-fetch").then(({ default: f }) => f(...args));
+
+      const res = await fetch(`${SHORT_API_BASE}/api/shorten`, {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ url: rawUrl }),
+      });
+
+      let shortUrl = null;
+      let displayText = null;
+
+      if (res.ok) {
+        const data = await res.json().catch(() => null);
+        // Common response shapes: { short_url }, { shortUrl }, { url }, { result }
+        shortUrl = data?.short_url || data?.shortUrl || data?.url || data?.result || null;
+      }
+
+      // Fallback: even if API fails, wrap the original URL in a hyperlink format
+      const targetUrl = shortUrl || rawUrl;
+      displayText     = shortUrl ? "Click here (hidden link)" : "Click here";
+
+      const resultEmbed = new EmbedBuilder()
+        .setColor(shortUrl ? 0x57f287 : 0xfee75c)
+        .setTitle(shortUrl ? "Your hyperlink is ready!" : "Hyperlink Created (original URL)")
+        .setDescription(
+          `Here is your disguised hyperlink:\n\n` +
+          `**[${displayText}](${targetUrl})**\n\n` +
+          `Copy the markdown above and paste it in any Discord message to show a masked link.`
+        )
+        .addFields(
+          { name: "Original URL", value: `\`${rawUrl}\``, inline: false },
+          { name: "Short / Hidden URL", value: `\`${targetUrl}\``, inline: false },
+          { name: "Markdown to copy", value: `\`\`\`[${displayText}](${targetUrl})\`\`\``, inline: false }
+        )
+        .setFooter({ text: `Requested by ${interaction.user.username} • linkurlshort.page.gd` })
+        .setTimestamp();
+
+      await interaction.editReply({ embeds: [resultEmbed] });
+    } catch (err) {
+      console.error("[bot] hyperlink error:", err.message);
+      await interaction.editReply({
+        content: "Something went wrong while shortening your link. Please try again.",
+      });
+    }
   }
 });
 
 // ── Start ───────────────────────────────────────────────────────────────────────
-
 if (!DISCORD_TOKEN) {
   console.error("[bot] DISCORD_BOT_TOKEN is not set.");
-  process.exit(1);
-}
-
-if (!OPENAI_KEY) {
-  console.error("[bot] OPENAI_API_KEY is not set.");
   process.exit(1);
 }
 

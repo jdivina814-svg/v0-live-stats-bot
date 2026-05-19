@@ -1,111 +1,102 @@
 export default function DiscordEmbedMockup() {
   return (
-    <div
-      className="mt-1 rounded overflow-hidden max-w-md"
-      style={{
-        backgroundColor: "oklch(0.26 0.005 260)",
-        borderLeft: "4px solid #5865f2",
-      }}
-    >
-      <div className="p-3 space-y-3">
-        {/* Title */}
-        <div>
-          <a
-            href="https://logged.tg/dashboard"
-            className="text-sm font-semibold text-primary hover:underline"
-          >
-            YourUsername | logged.tg
-          </a>
-        </div>
-
-        {/* Description */}
-        <p className="text-xs text-foreground">
-          <span className="font-semibold">Username:</span>{" "}
-          <code className="bg-secondary px-1 rounded font-mono text-[11px]">YourUsername</code>
-          {" — "}
-          <span className="text-yellow-400 font-semibold">Premium</span>
-        </p>
-
-        {/* Row 1 */}
-        <div className="grid grid-cols-3 gap-2">
-          {[
-            { label: "Total Hits",  value: "1.2K" },
-            { label: "Site Visits", value: "847"  },
-            { label: "Summary",     value: "R$ 42.5K" },
-          ].map(({ label, value }) => (
-            <div key={label}>
-              <p className="text-[10px] font-semibold text-foreground uppercase tracking-wide leading-tight">{label}</p>
-              <div
-                className="mt-0.5 rounded px-1.5 py-0.5"
-                style={{ backgroundColor: "oklch(0.22 0.005 260)" }}
-              >
-                <span className="text-xs text-foreground font-mono">{value}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Row 2 */}
-        <div className="grid grid-cols-3 gap-2">
-          {[
-            { label: "Total RAP",    value: "R$ 120K" },
-            { label: "Balance",      value: "R$ 8.3K" },
-            { label: "Limiteds RAP", value: "R$ 55K"  },
-          ].map(({ label, value }) => (
-            <div key={label}>
-              <p className="text-[10px] font-semibold text-foreground uppercase tracking-wide leading-tight">{label}</p>
-              <div
-                className="mt-0.5 rounded px-1.5 py-0.5"
-                style={{ backgroundColor: "oklch(0.22 0.005 260)" }}
-              >
-                <span className="text-xs text-foreground font-mono">{value}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Rare Items */}
-        <div className="pt-1 border-t border-border">
-          <p className="text-[10px] font-semibold text-foreground uppercase tracking-wide mb-1">Rare Items</p>
-          <div className="space-y-0.5 text-xs text-foreground">
-            <p>Korblox: <span className="text-green-400 font-semibold">Yes</span></p>
-            <p>Headless: <span className="text-red-400 font-semibold">No</span></p>
-          </div>
-        </div>
-
-        {/* Billing / Groups row */}
-        <div className="grid grid-cols-2 gap-4 pt-1 border-t border-border">
-          <div>
-            <p className="text-[10px] font-semibold text-foreground uppercase tracking-wide mb-1">Subscription</p>
-            <p className="text-xs text-foreground">Active: <span className="text-green-400 font-semibold">Yes</span></p>
-            <p className="text-xs text-muted-foreground">Expires: 2026-01-01</p>
-          </div>
-          <div>
-            <p className="text-[10px] font-semibold text-foreground uppercase tracking-wide mb-1">Groups</p>
-            <p className="text-xs text-foreground">Owned: <span className="font-bold">3</span></p>
-            <p className="text-xs text-muted-foreground">Balance: R$ 2.1K</p>
-          </div>
-        </div>
-
-        {/* Cookie / Billing */}
-        <div className="grid grid-cols-2 gap-4 pt-1 border-t border-border">
-          <div>
-            <p className="text-[10px] font-semibold text-foreground uppercase tracking-wide mb-1">Cookie Status</p>
-            <p className="text-xs text-green-400 font-semibold">Valid</p>
-          </div>
-          <div>
-            <p className="text-[10px] font-semibold text-foreground uppercase tracking-wide mb-1">Billing</p>
-            <p className="text-xs text-foreground">Total: R$ 340</p>
-            <p className="text-xs text-muted-foreground">Credit: R$ 50</p>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="pt-1 border-t border-border flex items-center gap-1.5">
-          <div className="w-3.5 h-3.5 rounded-full bg-secondary shrink-0" />
-          <p className="text-[10px] text-muted-foreground">
-            Requested by user • logged.tg
+    <div className="space-y-2">
+      {/* Initial !hyperlink embed with button */}
+      <div
+        className="mt-1 rounded overflow-hidden max-w-md"
+        style={{
+          backgroundColor: "oklch(0.26 0.005 260)",
+          borderLeft: "4px solid #5865f2",
+        }}
+      >
+        <div className="p-3 space-y-2.5">
+          <p className="text-sm font-semibold text-primary">Hide a Link with Hyperlink</p>
+          <p className="text-xs text-foreground leading-relaxed">
+            Want to disguise a long URL as a clean hyperlink?
+            <br />
+            Click <span className="font-semibold">Submit Link</span> below, paste your URL, and the bot will return a formatted hyperlink you can share anywhere.
           </p>
+          <div className="space-y-1">
+            <p className="text-[10px] font-semibold text-foreground uppercase tracking-wide">How it works</p>
+            <p className="text-xs text-muted-foreground">Your URL is posted to <span className="text-primary font-mono">linkurlshort.page.gd</span> and returned as a masked hyperlink.</p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-[10px] font-semibold text-foreground uppercase tracking-wide">Privacy</p>
+            <p className="text-xs text-muted-foreground">The link is visible only to you in this message reply.</p>
+          </div>
+          <div className="pt-1 border-t border-border flex items-center gap-1.5">
+            <p className="text-[10px] text-muted-foreground">Powered by linkurlshort.page.gd</p>
+          </div>
+        </div>
+        {/* Button row */}
+        <div className="px-3 pb-3">
+          <button
+            className="inline-flex items-center gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold px-3 py-1.5 rounded transition-colors cursor-default"
+            tabIndex={-1}
+            aria-disabled="true"
+          >
+            <span>🔗</span> Submit Link
+          </button>
+        </div>
+      </div>
+
+      {/* Result embed after submission */}
+      <div
+        className="mt-1 rounded overflow-hidden max-w-md"
+        style={{
+          backgroundColor: "oklch(0.26 0.005 260)",
+          borderLeft: "4px solid #57f287",
+        }}
+      >
+        <div className="p-3 space-y-2.5">
+          <p className="text-sm font-semibold" style={{ color: "#57f287" }}>Your hyperlink is ready!</p>
+          <p className="text-xs text-foreground leading-relaxed">
+            Here is your disguised hyperlink:
+            <br /><br />
+            <a
+              href="https://linkurlshort.page.gd/abc123"
+              className="font-semibold text-primary hover:underline"
+            >
+              Click here (hidden link)
+            </a>
+          </p>
+
+          <div className="space-y-1">
+            <p className="text-[10px] font-semibold text-foreground uppercase tracking-wide">Original URL</p>
+            <code
+              className="text-xs font-mono px-1.5 py-0.5 rounded block"
+              style={{ backgroundColor: "oklch(0.22 0.005 260)" }}
+            >
+              https://example.com/very/long/url/that/nobody/wants/to/see
+            </code>
+          </div>
+
+          <div className="space-y-1">
+            <p className="text-[10px] font-semibold text-foreground uppercase tracking-wide">Short / Hidden URL</p>
+            <code
+              className="text-xs font-mono px-1.5 py-0.5 rounded block"
+              style={{ backgroundColor: "oklch(0.22 0.005 260)" }}
+            >
+              https://linkurlshort.page.gd/abc123
+            </code>
+          </div>
+
+          <div className="space-y-1">
+            <p className="text-[10px] font-semibold text-foreground uppercase tracking-wide">Markdown to copy</p>
+            <code
+              className="text-xs font-mono px-1.5 py-0.5 rounded block text-green-400"
+              style={{ backgroundColor: "oklch(0.22 0.005 260)" }}
+            >
+              {`[Click here (hidden link)](https://linkurlshort.page.gd/abc123)`}
+            </code>
+          </div>
+
+          <div className="pt-1 border-t border-border flex items-center gap-1.5">
+            <div className="w-3.5 h-3.5 rounded-full bg-secondary shrink-0" />
+            <p className="text-[10px] text-muted-foreground">
+              Requested by user • linkurlshort.page.gd
+            </p>
+          </div>
         </div>
       </div>
     </div>
