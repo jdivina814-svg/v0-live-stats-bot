@@ -114,6 +114,21 @@ export default function DiscordEmbedMockup() {
             <span>ʜʏᴘᴇʀʟɪɴᴋ</span>
           </button>
         </div>
+        {/* Footer with avatar */}
+        <div
+          className="px-3 pb-2.5 flex items-center gap-2 border-t"
+          style={{ borderColor: DC.codeBg }}
+        >
+          <img
+            src="/placeholder.svg?height=16&width=16"
+            alt="User avatar"
+            className="rounded-full shrink-0"
+            style={{ width: 16, height: 16 }}
+          />
+          <span className="text-[11px]" style={{ color: DC.muted }}>
+            Requested by exampleuser
+          </span>
+        </div>
       </div>
 
       {/* ── Result embed (shown after modal submit) — no border color ── */}
@@ -152,10 +167,21 @@ export default function DiscordEmbedMockup() {
             ᴄᴏᴘʏ ᴛʜᴇ ᴛᴇxᴛ ᴀʙᴏᴠᴇ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ʜʏᴘᴇʀʟɪɴᴋ
           </p>
 
-          {/* Footer */}
-          <p className="text-[11px] pt-1 border-t" style={{ color: DC.muted, borderColor: DC.codeBg }}>
-            Requested by exampleuser
-          </p>
+          {/* Footer with avatar */}
+          <div
+            className="flex items-center gap-2 pt-1.5 border-t"
+            style={{ borderColor: DC.codeBg }}
+          >
+            <img
+              src="/placeholder.svg?height=16&width=16"
+              alt="User avatar"
+              className="rounded-full shrink-0"
+              style={{ width: 16, height: 16 }}
+            />
+            <span className="text-[11px]" style={{ color: DC.muted }}>
+              Requested by exampleuser
+            </span>
+          </div>
         </div>
       </div>
 

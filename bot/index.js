@@ -100,7 +100,11 @@ client.on("messageCreate", async (message) => {
       "<a:emoji_3:1500695831169204295> ᴜꜱᴇ ᴛʜɪꜱ ᴛᴏᴏʟ ᴛᴏ ɢᴇɴᴇʀᴀᴛᴇ ʜʏᴘᴇʀʟɪɴᴋꜱ ᴛʜᴀᴛ ʙʏᴘᴀꜱꜱ ᴅɪꜱᴄᴏʀᴅ ᴡᴀʀɴɪɴɢꜱ\n\n" +
       "<:emoji_4:1501269124330950787> ʙᴇꜱᴛ ʜʏᴘᴇʀʟɪɴᴋ ᴏꜰ ᴀʟʟ ᴛɪᴍᴇ**"
     )
-    .setImage("https://image2url.com/r2/default/gifs/1768488617981-bdc4c780-144f-4a40-8906-ddf01eadb705.gif");
+    .setImage("https://image2url.com/r2/default/gifs/1768488617981-bdc4c780-144f-4a40-8906-ddf01eadb705.gif")
+    .setFooter({
+      text: `Requested by ${message.author.username}`,
+      iconURL: message.author.displayAvatarURL({ dynamic: true }),
+    });
 
   const row = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
@@ -188,7 +192,10 @@ client.on("interactionCreate", async (interaction) => {
           `\`${fmt}\`\n\n` +
           `*ᴄᴏᴘʏ ᴛʜᴇ ᴛᴇxᴛ ᴀʙᴏᴠᴇ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ʜʏᴘᴇʀʟɪɴᴋ*`
         )
-        .setFooter({ text: `Requested by ${interaction.user.username}` });
+        .setFooter({
+          text: `Requested by ${interaction.user.username}`,
+          iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+        });
 
       // Send the fmt as a separate plain message so users can select & copy just the text
       await interaction.editReply({ embeds: [resultEmbed] });
