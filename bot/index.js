@@ -79,6 +79,20 @@ async function getSolvedCookie(fetch) {
 const WELCOME_CHANNEL_ID = "1506536157016494140";
 const WELCOME_GIF        = "https://image2url.com/r2/default/gifs/1768488617981-bdc4c780-144f-4a40-8906-ddf01eadb705.gif";
 
+// ── Startup lock — refuse to run if another instance already holds the lock ──────
+// Uses a TCP server on a fixed local port. If the port is already taken, this
+// process is a duplicate and must exit immediately.
+const net = require("net");
+const LOCK_PORT = 47123;
+const lockServer = net.createServer();
+lockServer.listen(LOCK_PORT, "127.0.0.1", () => {
+  console.log(`[bot] Instance lock acquired on port ${LOCK_PORT}. Starting bot...`);
+});
+lockServer.on("error", () => {
+  console.error("[bot] Another instance is already running. Exiting to prevent duplicate responses.");
+  process.exit(0);
+});
+
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
