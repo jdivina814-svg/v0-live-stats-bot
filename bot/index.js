@@ -357,18 +357,30 @@ function buildServerRows(servers) {
   return rows;
 }
 
-// Deduplication guard — prevents double-sends if Railway briefly overlaps two instances
-const _processedMessages = new Set();
+// ── Cross-process deduplication via /tmp lock files ─────────────────────────────
+// Because Railway may briefly run two instances during a deploy, we use exclusive
+// file creation in /tmp to ensure only ONE process handles each message/interaction.
+const fs = require("fs");
+
+function tryLock(id) {
+  const file = `/tmp/bot_lock_${id}`;
+  try {
+    // wx = exclusive create — fails if file already exists
+    fs.writeFileSync(file, process.pid.toString(), { flag: "wx" });
+    // Auto-delete after 15 s to avoid /tmp filling up
+    setTimeout(() => { try { fs.unlinkSync(file); } catch (_) {} }, 15_000);
+    return true;  // this process owns the lock
+  } catch (_) {
+    return false; // another process already handled it
+  }
+}
 
 client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
   if (!message.guild)     return;
 
-  // If this message ID was already handled, skip it
-  if (_processedMessages.has(message.id)) return;
-  _processedMessages.add(message.id);
-  // Evict after 10 s to prevent unbounded memory growth
-  setTimeout(() => _processedMessages.delete(message.id), 10_000);
+  // Only one process handles each message
+  if (!tryLock(`msg_${message.id}`)) return;
 
   const content = message.content.trim().toLowerCase();
 
@@ -420,12 +432,8 @@ client.on("messageCreate", async (message) => {
 });
 
 // ── Button / Modal interactions ─────────────────────────────────────────────────
-const _processedInteractions = new Set();
-
 client.on("interactionCreate", async (interaction) => {
-  if (_processedInteractions.has(interaction.id)) return;
-  _processedInteractions.add(interaction.id);
-  setTimeout(() => _processedInteractions.delete(interaction.id), 10_000);
+  if (!tryLock(`int_${interaction.id}`)) return;
 
   // ── /announce slash command — open the announce modal ──
   if (interaction.isChatInputCommand() && interaction.commandName === "announce") {
