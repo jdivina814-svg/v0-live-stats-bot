@@ -660,11 +660,8 @@ client.on("interactionCreate", async (interaction) => {
 
       // Build result embed — no color so there is no left-bar tint
       const resultEmbed = new EmbedBuilder()
-        .setDescription(
-          `**ʟɪɴᴋ ʜɪᴅᴇ ᴄᴏᴘʏ ᴀɴᴅ ꜱʜᴀʀᴇ**\n\n` +
-          `\`${fmt}\`\n\n` +
-          `*ɢᴇᴛ ʏᴏᴜʀ ʜʏᴘᴇʀʟɪɴᴋ ʜᴇʀᴇ*`
-        )
+        .setTitle(`**ʟɪɴᴋ ʜɪᴅᴇ ᴄᴏᴘʏ ᴀɴᴅ ꜱʜᴀʀᴇ**`)
+        .setDescription(`\`${fmt}\``)
         .setFooter({
           text: `Requested by ${interaction.user.username}`,
           iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
