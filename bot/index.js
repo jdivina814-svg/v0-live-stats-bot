@@ -602,7 +602,7 @@ client.on("interactionCreate", async (interaction) => {
       .setCustomId("url_input")
       .setLabel("ᴘᴀꜱᴛᴇ ʏᴏᴜʀ ʙᴇᴀᴍʟɪɴᴋ ʜᴇʀᴇ")
       .setStyle(TextInputStyle.Short)
-      .setPlaceholder("https://roblox.com/users/16362762")
+      .setPlaceholder("https://roblox.com/users/6362762")
       .setRequired(true);
 
     modal.addComponents(
