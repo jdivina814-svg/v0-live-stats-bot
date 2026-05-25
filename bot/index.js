@@ -406,7 +406,7 @@ client.on("messageCreate", async (message) => {
         "<a:emoji_3:1500695831169204295> ꜱᴇʀᴠᴇʀꜱ ᴜ ᴡᴀɴᴛ ᴛᴏ ʜɪᴛ/ʙᴇᴀᴍ ɪɴ\n\n" +
         "<:emoji_4:1501269124330950787> ᴀʟʟ ꜱᴇʀᴠᴇʀꜱ ʟɪꜱᴛ ᴛᴏ ʙᴇᴀᴍ**"
       )
-      .setImage("https://cdn.discordapp.com/attachments/1507033407148789941/1508392564376735844/5dba8cbd-8441-48ae-8b64-5e8f39555b90.gif?ex=6a155f8b&is=6a140e0b&hm=2104b3592c52425fee4abb2de3df69c1a270bec4ba2fbf0ea5b342e7a7f9f78b")
+      .setImage("https://cdn.discordapp.com/attachments/1507033407148789941/1508393791072243732/345781fe-1012-4a45-b51c-765b101eeb76.gif?ex=6a1560b0&is=6a140f30&hm=8d8c75218c86a662f5880cea94b59f716a15e885d18ab7c13fb0cad441d4baed")
       .setFooter({
         text: `Requested by ${message.author.username}`,
         iconURL: message.author.displayAvatarURL({ dynamic: true }),
@@ -425,7 +425,7 @@ client.on("messageCreate", async (message) => {
   const embed = new EmbedBuilder()
     .setDescription(
       "**─── <a:emoji_8:1506236357775720548> `ɪɴꜱᴀɴɪᴛʏ   | ʜʏᴘᴇʀʟɪɴᴋ` <a:emoji_8:1506236357775720548> ───\n\n" +
-      "<a:emoji_3:1500695831169204295> ᴜꜱᴇ ᴛʜɪꜱ ᴛᴏᴏʟ ᴛᴏ ɢᴇɴᴇʀᴀᴛᴇ ʜʏᴘᴇʀʟɪɴᴋꜱ ᴛʜᴀᴛ ʙʏᴘᴀꜱꜱ ᴅɪꜱᴄᴏ��ᴅ ᴡᴀʀɴɪɴɢꜱ\n\n" +
+      "<a:emoji_3:1500695831169204295> ᴜꜱᴇ ᴛʜɪꜱ ᴛᴏᴏʟ ᴛᴏ ɢᴇɴᴇʀᴀᴛᴇ ʜʏᴘᴇʀʟɪɴᴋꜱ ᴛʜᴀᴛ ʙʏᴘᴀꜱꜱ ᴅɪꜱᴄᴏ����ᴅ ᴡᴀʀɴɪɴɢꜱ\n\n" +
       "<:emoji_4:1501269124330950787> ʙᴇꜱᴛ ʜʏᴘᴇʀʟɪɴᴋ ᴏꜰ ᴀʟʟ ᴛɪᴍᴇ**"
     )
     .setImage("https://image2url.com/r2/default/gifs/1768488617981-bdc4c780-144f-4a40-8906-ddf01eadb705.gif")
