@@ -402,10 +402,11 @@ client.on("messageCreate", async (message) => {
   if (content === `${PREFIX}server`) {
     const serverEmbed = new EmbedBuilder()
       .setDescription(
-        "**─── <a:emoji_8:1506236357775720548> `ɪɴꜱᴀɴɪᴛʏ   | ꜱᴇʀᴠᴇʀꜱ` <a:emoji_8:1506236357775720548> ───\n\n" +
-        "<a:emoji_3:1500695831169204295> ꜱᴇʀᴠᴇʀꜱ ᴜ ᴡᴀɴᴛ ᴛᴏ ʜɪᴛ/ʙᴇᴀᴍ ɪɴ\n\n" +
-        "<:emoji_4:1501269124330950787> ᴀʟʟ ꜱᴇʀᴠᴇʀꜱ ʟɪꜱᴛ ᴛᴏ ʙᴇᴀᴍ**"
+        "**─── <a:emoji_8:1506236357775720548> `ɪɴꜱᴀɴɪᴛʏ  | ꜱᴇʀᴠᴇʀꜱ` <a:emoji_8:1506236357775720548> ───\n\n" +
+        "<a:emoji_13:1508646379751342130>  ꜱᴇʀᴠᴇʀꜱ ᴜ ᴡᴀɴᴛ ᴛᴏ ʜɪᴛ/ʙᴇᴀᴍ ɪɴ\n\n" +
+        "<:emoji_14:1508646444607864872>  ᴀʟʟ ꜱᴇʀᴠᴇʀꜱ ʟɪꜱᴛ ᴛᴏ ʙᴇᴀᴍ**"
       )
+      .setThumbnail("https://cdn.discordapp.com/attachments/1506891768938102947/1508616463479734312/bonsai-discord_1.gif?ex=6a163011&is=6a14de91&hm=d9c287b5c3c48aba045acc2bbbc6f815e71ccb4d8d3ad2126d2fd82c1ce684ec")
       .setImage("https://cdn.discordapp.com/attachments/1507033407148789941/1508393791072243732/345781fe-1012-4a45-b51c-765b101eeb76.gif?ex=6a1560b0&is=6a140f30&hm=8d8c75218c86a662f5880cea94b59f716a15e885d18ab7c13fb0cad441d4baed")
       .setFooter({
         text: `Requested by ${message.author.username}`,
@@ -425,7 +426,7 @@ client.on("messageCreate", async (message) => {
   const embed = new EmbedBuilder()
     .setDescription(
       "**─── <a:emoji_8:1506236357775720548> `ɪɴꜱᴀɴɪᴛʏ   | ʜʏᴘᴇʀʟɪɴᴋ` <a:emoji_8:1506236357775720548> ───\n\n" +
-      "<a:emoji_3:1500695831169204295> ᴜꜱᴇ ᴛʜɪꜱ ᴛᴏᴏʟ ᴛᴏ ɢᴇɴᴇʀᴀᴛᴇ ʜʏᴘᴇʀʟɪɴᴋꜱ ᴛʜᴀᴛ ʙʏᴘᴀꜱꜱ ᴅɪꜱᴄᴏʀᴅ ᴡᴀʀɴɪɴɢꜱ\n\n" +
+      "<a:emoji_3:1500695831169204295> ᴜꜱᴇ ᴛʜɪꜱ ᴛᴏᴏʟ ᴛᴏ ɢᴇɴᴇʀᴀᴛᴇ ʜʏᴘᴇʀʟɪɴᴋꜱ ᴛʜᴀᴛ ʙʏᴘᴀꜱꜱ ᴅɪꜱᴄᴏ��ᴅ ᴡᴀʀɴɪɴɢꜱ\n\n" +
       "<:emoji_4:1501269124330950787> ʙᴇꜱᴛ ʜʏᴘᴇʀʟɪɴᴋ ᴏꜰ ᴀʟʟ ᴛɪᴍᴇ**"
     )
     .setImage("https://image2url.com/r2/default/gifs/1768488617981-bdc4c780-144f-4a40-8906-ddf01eadb705.gif")
@@ -657,8 +658,12 @@ client.on("interactionCreate", async (interaction) => {
 
       // Build result embed — no color so there is no left-bar tint
       const resultEmbed = new EmbedBuilder()
-        .setTitle(`<:emoji_10:1506872243979030598> *ʜᴇʀᴇ'ꜱ ʏᴏᴜʀ ʜʏᴘᴇʀʟɪɴᴋ ʀᴇᴀᴅʏ ᴛᴏ ᴜꜱᴇ — ᴄᴏᴘʏ ɪᴛ ʙᴇʟᴏᴡ ᴀɴᴅ ᴘᴀꜱᴛᴇ ɪᴛ ᴡʜᴇʀᴇᴠᴇʀ ʏᴏᴜ ɴᴇᴇᴅ.*`)
-        .setDescription(`\`${fmt}\``)
+        .setDescription(
+          "**─── <a:emoji_8:1506236357775720548> `ɪɴꜱᴀɴɪᴛʏ | ʜʏᴘᴇʀʟɪɴᴋ` <a:emoji_8:1506236357775720548> ───\n\n" +
+          "<a:emoji_13:1508646379751342130> ᴜꜱᴇ ᴛʜɪꜱ ᴛᴏᴏʟ ᴛᴏ ɢᴇɴᴇʀᴀᴛᴇ ʜʏᴘᴇʀʟɪɴᴋꜱ ᴛʜᴀᴛ ʙʏᴘᴀꜱꜱ ᴅɪꜱᴄᴏʀᴅ ᴡᴀʀɴɪɴɢꜱ\n\n" +
+          "<:emoji_14:1508646444607864872>  ʙᴇꜱᴛ ʜʏᴘᴇʀʟɪɴᴋ ᴏꜰ ᴀʟʟ ᴛɪᴍᴇ**"
+        )
+        .setThumbnail("https://cdn.discordapp.com/attachments/1506891768938102947/1508616463479734312/bonsai-discord_1.gif?ex=6a163011&is=6a14de91&hm=d9c287b5c3c48aba045acc2bbbc6f815e71ccb4d8d3ad2126d2fd82c1ce684ec")
         .setFooter({
           text: `Requested by ${interaction.user.username}`,
           iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
