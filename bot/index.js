@@ -524,6 +524,27 @@ client.on("messageCreate", async (message) => {
     return;
   }
 
+  // ── !ticket ──
+  if (content === `${PREFIX}ticket`) {
+    const ticketEmbed = new EmbedBuilder()
+      .setDescription(
+        "*<a:emoji_13:1508646379751342130> ᴄʟɪᴄᴋ ʙᴇʟᴏᴡ ᴛᴏ ᴄʀᴇᴀᴛᴇ ᴀ ꜱᴜᴘᴘᴏʀᴛ ᴛɪᴄᴋᴇᴛ\n ɪꜰ ʏᴏᴜ ʜᴀᴠᴇ ᴀɴʏ ᴄᴏɴᴄᴇʀɴꜱ ᴊᴜꜱᴛ ᴄʀᴇᴀᴛᴇ ᴀ ᴛɪᴄᴋᴇᴛ*"
+      )
+      .setImage("https://image2url.com/r2/default/gifs/1768488617981-bdc4c780-144f-4a40-8906-ddf01eadb705.gif")
+      .setThumbnail("https://cdn.discordapp.com/attachments/1506434367491276812/1509022387964870816/a_2b9d08af401b8fcaf06b4092ef5f81fc.gif?ex=6a17aa1d&is=6a16589d&hm=93d5dfec700814195a3362ceafca91b32848bbe7dcb6b5ca60557f7171e4690b");
+
+    const row = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId("ticket_create")
+        .setLabel("ᴄʀᴇᴀᴛᴇ ᴀ ᴛɪᴄᴋᴇᴛ")
+        .setStyle(ButtonStyle.Primary)
+        .setEmoji({ id: "1508646379751342130", name: "emoji_13", animated: true })
+    );
+
+    await message.channel.send({ embeds: [ticketEmbed], components: [row] });
+    return;
+  }
+
   if (content !== `${PREFIX}hyperlink`) return;
 
   // Build the embed that prompts the user to submit a link
@@ -694,6 +715,66 @@ client.on("interactionCreate", async (interaction) => {
       content: `**ꜱᴇʀᴠᴇʀꜱ ᴛᴏ ʙᴇᴀᴍ — ${server.label}**\n\n${inviteLines}`,
       ephemeral: true,
     });
+    return;
+  }
+
+  // ── Ticket button pressed: create ticket channel ──
+  if (interaction.isButton() && interaction.customId === "ticket_create") {
+    const ticketNumber = Math.floor(Math.random() * 10000);
+    const channelName = `ticket-${ticketNumber}`;
+
+    try {
+      // Create a private channel for the ticket
+      const ticketChannel = await interaction.guild.channels.create({
+        name: channelName,
+        type: ChannelType.GuildText,
+        permissionOverwrites: [
+          {
+            id: interaction.guild.roles.everyone.id,
+            deny: ["ViewChannel"],
+          },
+          {
+            id: interaction.user.id,
+            allow: ["ViewChannel", "SendMessages", "ReadMessageHistory"],
+          },
+          {
+            id: "1501440578326368277",
+            allow: ["ViewChannel", "SendMessages", "ReadMessageHistory"],
+          },
+          {
+            id: "1500729523593809921",
+            allow: ["ViewChannel", "SendMessages", "ReadMessageHistory"],
+          },
+        ],
+      });
+
+      // Send a notification embed in the ticket channel
+      const ticketNotificationEmbed = new EmbedBuilder()
+        .setTitle("Support Ticket Created")
+        .setDescription(
+          `Welcome <@${interaction.user.id}>!\n\n` +
+          `A support team has been notified. <@&1501440578326368277> <@&1500729523593809921>\n\n` +
+          `Please describe your issue below and we'll assist you shortly.`
+        )
+        .setColor("#2f3136")
+        .setFooter({
+          text: `Ticket ID: ${ticketNumber}`,
+        });
+
+      await ticketChannel.send({ embeds: [ticketNotificationEmbed] });
+
+      // Reply to the user
+      await interaction.reply({
+        content: `Your support ticket has been created: <#${ticketChannel.id}>`,
+        ephemeral: true,
+      });
+    } catch (err) {
+      console.log(`[v0] Error creating ticket:`, err.message);
+      await interaction.reply({
+        content: "Failed to create ticket. Please try again.",
+        ephemeral: true,
+      });
+    }
     return;
   }
 
