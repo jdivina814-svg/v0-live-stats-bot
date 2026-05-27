@@ -204,10 +204,10 @@ client.once("ready", async () => {
   console.log(`[bot] Online as ${client.user.tag}`);
   client.user.setActivity("!hyperlink", { type: ActivityType.Listening });
 
-  // Run auto-purge every 6 hours (21600000 milliseconds)
-  setInterval(autoPurgeChannels, 21600000);
+  // Run auto-purge every 2 hours (7200000 milliseconds)
+  setInterval(autoPurgeChannels, 7200000);
   // Run immediately on startup
-  console.log("[v0] Auto-purge scheduled every 6 hours");
+  console.log("[v0] Auto-purge scheduled every 2 hours");
   autoPurgeChannels();
 
   // Register /announce slash command globally
