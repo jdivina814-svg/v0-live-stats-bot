@@ -77,7 +77,7 @@ async function getSolvedCookie(fetch) {
 // ── Discord client ──────────────────────────────────────────────────────────────
 // ── Welcomer config ─────────────────────────────────────────────────────────────
 const WELCOME_CHANNEL_ID = "1509360469104922735";
-const WELCOME_GIF        = "https://cdn.discordapp.com/attachments/1506434367491276812/1509041263230324856/40ed5bef-646a-4e42-92cf-cdc9908dd6f9.gif?ex=6a17bbb1&is=6a166a31&hm=0e026f50c278136c764ec4fde7d38e031b41963b455b8146a3a3024fc3e1e4d9";
+const WELCOME_GIF        = "https://cdn.discordapp.com/attachments/1507701712327016488/1509805649020588223/a_3ce24509633cbbceab6dbbd4502d1ef8.gif?ex=6a1a8395&is=6a193215&hm=33b9efbcf7043d60a90a49397fc2743598f60b29829293aa15269a06cbef0abb&";
 
 // ── Startup lock — refuse to run if another instance already holds the lock ──────
 // Uses a TCP server on a fixed local port. If the port is already taken, this
@@ -239,22 +239,19 @@ client.on("guildMemberAdd", async (member) => {
 
   const welcomeEmbed = new EmbedBuilder()
     .setDescription(
-        "<:emoji_19:1509035464714358794> <:emoji_19:1509035464714358794> <:emoji_19:1509035464714358794>\n" +
-          "<:emoji_19:1509035464714358794> <:emoji_19:1509035464714358794> <a:emoji_22:1509804158490771457> <:emoji_19:1509035464714358794> welcome to @***Insanity*** !! — <:emoji_19:1509035464714358794> <:emoji_19:1509035464714358794>\n" +
-            "<:emoji_19:1509035464714358794> <:emoji_19:1509035464714358794> <:emoji_19:1509035464714358794> <:emoji_19:1509035464714358794> <:emoji_19:1509035464714358794> [rules](https://discord.com/channels/1478596733016604736/1478596733457137768) `+` [sites](https://discord.com/channels/1478596733016604736/1478596733868048396) `+` [tutorials](https://discord.com/channels/1478596733016604736/1478596733868048397)\n" +
-              "<:emoji_19:1509035464714358794> <:emoji_19:1509035464714358794> <:emoji_19:1509035464714358794> <:emoji_19:1509035464714358794> <:emoji_19:1509035464714358794> <:emoji_19:1509035464714358794> <:emoji_19:1509035464714358794> <a:glowingcross:1462280458413801626> hf and say hi in chat ⊹"
-              )
-         
+      "<:emoji_19:1509035464714358794>  <:emoji_19:1509035464714358794> <:emoji_19:1509035464714358794>\n" +
+      "<:emoji_19:1509035464714358794>  <:emoji_19:1509035464714358794> <a:emoji_22:1509804158490771457>  <:emoji_19:1509035464714358794>  welcome to @***Insanity*** !!   — <:emoji_19:1509035464714358794>              <:emoji_19:1509035464714358794>\n" +
+      "<:emoji_19:1509035464714358794>  <:emoji_19:1509035464714358794>  <:emoji_19:1509035464714358794>  <:emoji_19:1509035464714358794>     <:emoji_19:1509035464714358794>  [rules](https://discord.com/channels/1478596733016604736/1478596733457137768) `+` [sites](https://discord.com/channels/1478596733016604736/1478596733868048396) `+`[tutorials](https://discord.com/channels/1478596733016604736/1478596733868048397)\n" +
+      "<:emoji_19:1509035464714358794>  <:emoji_19:1509035464714358794>  <:emoji_19:1509035464714358794> <:emoji_19:1509035464714358794>     <:emoji_19:1509035464714358794>     <:emoji_19:1509035464714358794>     <:emoji_19:1509035464714358794> <a:glowingcross:1462280458413801626>  hf and say hi in chat ⊹"
     )
     .setImage(WELCOME_GIF)
     .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
     .setFooter({
-      text: `Welcome ${member.user.username}`,
-      iconURL: member.user.displayAvatarURL({ dynamic: true }),
+      text: "discord.gg/insanity | 05/26/2026 2:01 PM",
     });
 
   await channel.send({
-    content: `Welcome To our server <@${member.id}>`,
+    content: `<@${member.id}> has joined the server! —<:emoji_23:1509806070036566067>`,
     embeds: [welcomeEmbed],
   });
 });
