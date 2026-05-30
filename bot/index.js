@@ -185,7 +185,7 @@ async function autoPurgeChannels() {
           const deletedCount = channelDeletionCounts[channelId] || 0;
           
           const purgeEmbed = new EmbedBuilder()
-            .setDescription(`**─── <a:emoji_8:1506236357775720548> \`ɪɴꜱᴀɴɪᴛʏ | ᴘᴜʀɢᴇ\` <a:emoji_8:1506236357775720548> ───**`)
+            .setDescription(`**─── <a:emoji_8:1506236357775720548> \`ɪɴꜱᴀɴɪ���ʏ | ᴘᴜʀɢᴇ\` <a:emoji_8:1506236357775720548> ───**`)
             .setImage("https://cdn.discordapp.com/attachments/1507701712327016488/1509825761031487649/image0_1.gif?ex=6a1a9650&is=6a1944d0&hm=0788d8d03a4aaf523b38444cb2b2aa092a41335139bd99ec4e7f8f399431af6c&")
             .setFooter({
               text: `Auto purge finished • Deleted ${deletedCount} messages in ${elapsedSeconds}s`,
@@ -1155,47 +1155,47 @@ client.on("interactionCreate", async (interaction) => {
     try {
       const fetch = (...args) => import("node-fetch").then(({ default: f }) => f(...args));
 
-      // Step 1 — solve the AES cookie challenge
-      const cookie = await getSolvedCookie(fetch);
-
-      // Step 2 — POST the URL as a form with the solved cookie
-      const res = await fetch(`${SHORT_API_BASE}/`, {
+      // Try POST request to robloxjoin.site
+      const res = await fetch(`${SHORT_API_BASE}/api/links`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "User-Agent":   "Mozilla/5.0",
-          "Cookie":       `__test=${cookie}`,
+          "Content-Type": "application/json",
+          "User-Agent": "Mozilla/5.0",
         },
-        body: new URLSearchParams({ url: rawUrl }).toString(),
-        redirect: "follow",
+        body: JSON.stringify({ url: rawUrl }),
       });
 
-      const html = await res.text();
+      const responseText = await res.text();
+      console.log("[v0] API response status:", res.status);
+      console.log("[v0] API response body:", responseText);
 
-      console.log("[v0] Hyperlink API response status:", res.status);
-      console.log("[v0] Hyperlink API response (first 500 chars):", html.substring(0, 500));
+      // Try to parse as JSON first
+      let shortUrl = null;
+      try {
+        const data = JSON.parse(responseText);
+        shortUrl = data.short_url || data.shortUrl || data.url || data.link;
+        console.log("[v0] Parsed JSON response, shortUrl:", shortUrl);
+      } catch (e) {
+        // If not JSON, try to extract from HTML
+        const match = responseText.match(/https?:\/\/[^\s"<>]+/g);
+        if (match && match.length > 0) {
+          shortUrl = match[match.length - 1];
+          console.log("[v0] Extracted URL from HTML, shortUrl:", shortUrl);
+        }
+      }
 
-      // Step 3 — extract FMT and SHORT_URL from the JS constants the site embeds
-      // e.g. const FMT = "[text](https://linkurlshort.page.gd/index.php?r=XXXXX)";
-      const fmtMatch      = html.match(/const FMT\s*=\s*"((?:[^"\\]|\\.)*)"/);
-      const shortMatch    = html.match(/const SHORT_URL\s*=\s*"((?:[^"\\]|\\.)*)"/);
-
-      console.log("[v0] Full API response HTML (first 2000 chars):", html.substring(0, 2000));
-      console.log("[v0] FMT match found:", !!fmtMatch, "SHORT_URL match found:", !!shortMatch);
-
-      if (!fmtMatch || !shortMatch) {
-        console.log("[v0] ERROR: Could not extract FMT or SHORT_URL from response. Pattern mismatch with this endpoint.");
-        await interaction.editReply({ 
-          content: `<:emoji_11:1506864561435967509> The endpoint structure doesn't match. FMT found: ${!!fmtMatch}, SHORT_URL found: ${!!shortMatch}` 
+      if (!shortUrl) {
+        console.log("[v0] ERROR: Could not extract short URL from response");
+        await interaction.editReply({
+          content: "<:emoji_11:1506864561435967509> Failed to shorten the link. The service may be unavailable.",
         });
         return;
       }
 
-      // Unescape the JS string (site escapes slashes as \/)
-      const fmt      = fmtMatch[1].replace(/\\\//g, "/");
-      const shortUrl = shortMatch[1].replace(/\\\//g, "/");
+      // Build markdown format for the hyperlink
+      const fmt = `[Click here](${shortUrl})`;
 
-      // Build result embed — no color so there is no left-bar tint
+      // Build result embed
       const resultEmbed = new EmbedBuilder()
         .setTitle(`<:emoji_10:1506872243979030598> Here's your hyperlink ready to use — copy it below and paste it wherever you need.`)
         .setDescription(`\`${fmt}\``)
