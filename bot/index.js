@@ -840,7 +840,7 @@ client.on("messageCreate", async (message) => {
     const toolsRow = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setURL("https://refresher.fwh.is/?i=1")
-        .setLabel("ᴄᴏᴏᴋɪᴇ ʀᴇꜰʀᴇꜱʜᴇʀ")
+        .setLabel("��ᴏᴏᴋɪᴇ ʀᴇꜰʀᴇꜱʜᴇʀ")
         .setStyle(ButtonStyle.Link)
         .setEmoji({ id: "1508646379751342130", name: "emoji_13", animated: true }),
       new ButtonBuilder()
@@ -1168,6 +1168,7 @@ client.on("interactionCreate", async (interaction) => {
       });
 
       const responseHtml = await res.text();
+      console.log("[v0] Hyperlink API response (first 2000 chars):", responseHtml.substring(0, 2000));
       let shortUrl = null;
 
       // Pattern 1: data-short-url attribute
@@ -1192,7 +1193,23 @@ client.on("interactionCreate", async (interaction) => {
         if (match4) shortUrl = match4[1];
       }
 
+      // Pattern 5: Look for JSON response
       if (!shortUrl) {
+        try {
+          const jsonMatch = responseHtml.match(/\{[\s\S]*?\}/);
+          if (jsonMatch) {
+            const json = JSON.parse(jsonMatch[0]);
+            shortUrl = json.url || json.short_url || json.shortUrl || json.link;
+          }
+        } catch (e) {
+          // Not JSON, continue
+        }
+      }
+
+      console.log("[v0] Extracted short URL:", shortUrl);
+
+      if (!shortUrl) {
+        console.error("[v0] Could not extract short URL from response. Response length:", responseHtml.length);
         await interaction.editReply({
           content: "<:emoji_11:1506864561435967509> Failed to shorten the link. The service may be unavailable.",
         });
